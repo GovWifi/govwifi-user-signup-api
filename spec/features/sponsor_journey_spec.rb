@@ -188,7 +188,7 @@ RSpec.describe App do
       end
       it "sends a receipt when a sponsee email has failed to send" do
         write_email_to_s3(body: "07701001111\njohn@nongov.uk", bucket_name:, object_key:)
-        error = Notifications::Client::RequestError.new(double(body: "ValidationError", code: 200))
+        error = Notifications::Client::BadRequestError.new(double(body: "Error", code: 400))
         allow(Services.notify_client).to receive(:send_email).with(hash_including(template_id: "sponsor_credentials_email_id")).and_raise error
         allow(Services.notify_client).to receive(:send_sms).with(hash_including(template_id: "credentials_sms_id")).and_raise error
 

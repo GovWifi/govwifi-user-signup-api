@@ -81,7 +81,7 @@ describe WifiUser::UseCase::SmsResponse do
     context "with an email address validation error" do
       before do
         allow(notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError,
-                                                             OpenStruct.new(code: 500, body: "ValidationError"))
+                                                             OpenStruct.new(code: 400, body: "ValidationError"))
       end
       it "doesn't raise error when the email is not valid" do
         expect {
@@ -90,7 +90,7 @@ describe WifiUser::UseCase::SmsResponse do
       end
       it "logs the attempt" do
         subject.execute(contact: phone_number, sms_content: "Go")
-        expect(logger).to have_received(:warn).with(/Failed to send email/)
+        expect(logger).to have_received(:warn).with(/Failed to send SMS/)
       end
       it "does not create a user" do
         expect {
@@ -100,13 +100,13 @@ describe WifiUser::UseCase::SmsResponse do
     end
     context "with an error that is not a email address validation error" do
       before do
-        allow(notify_client).to receive(:send_sms).and_raise(Notifications::Client::BadRequestError,
-                                                             OpenStruct.new(code: 500, body: "Something"))
+        allow(notify_client).to receive(:send_sms).and_raise(Notifications::Client::ClientError,
+                                                             OpenStruct.new(code: 450, body: "Something"))
       end
       it "re-raises the error" do
         expect {
           subject.execute(contact: "447700900003", sms_content: "Go")
-        }.to raise_error(Notifications::Client::BadRequestError)
+        }.to raise_error(Notifications::Client::ClientError)
       end
       it "does not create a user" do
         expect {

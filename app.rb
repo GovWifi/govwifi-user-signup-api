@@ -48,7 +48,7 @@ class App < Sinatra::Base
     logger.info(sns_message.to_s) if sns_message.type == "SubscriptionConfirmation"
 
     if sns_message.sponsor_request?
-      WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
+      WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:, logger:).execute
     else
       WifiUser::UseCase::EmailJourneyHandler.new(from_address: sns_message.from_address).execute
     end

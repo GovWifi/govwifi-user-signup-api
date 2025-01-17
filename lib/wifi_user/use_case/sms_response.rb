@@ -14,8 +14,6 @@ class WifiUser::UseCase::SmsResponse
       WifiUser::SMSSender.send_signup_instructions(phone_number:, sms_content:, personalisation:)
     end
   rescue Notifications::Client::BadRequestError => e
-    raise e unless e.message.include? "ValidationError"
-
-    @logger.warn("Failed to send email: #{e.message}")
+    @logger.warn("Failed to send SMS: #{e.message}")
   end
 end

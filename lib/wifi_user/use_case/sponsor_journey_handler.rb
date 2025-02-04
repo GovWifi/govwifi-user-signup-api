@@ -1,7 +1,8 @@
 class WifiUser::UseCase::SponsorJourneyHandler
   include WifiUser::EmailAllowListChecker
 
-  def initialize(sns_message:)
+  def initialize(sns_message:, logger: Logger.new($stdout))
+    @logger = logger
     @sns_message = sns_message
   end
 
@@ -42,9 +43,8 @@ private
     else
       WifiUser::SMSSender.send_sponsor_sms(sponsee_user)
     end
-  rescue Notifications::Client::RequestError => e
-    raise unless e.message.include?("ValidationError")
-
+  rescue Notifications::Client::BadRequestError => e
+    @logger.info(e.message)
     false
   else
     true

@@ -1,2 +1,10 @@
-# SimpleCov output
+.github
 coverage
+spec
+.editorconfig
+.gitignore
+.rspec
+.rubocop.yml
+.secrets.baseline
+buildspec.yml
+docker-compose.yml

@@ -17,7 +17,6 @@ prebuild:
 
 serve:
 	$(MAKE) build
-	$(DOCKER_COMPOSE) run --rm app bundle exec rake db:migrate
 	$(DOCKER_COMPOSE) up -d
 
 lint:
@@ -40,5 +39,5 @@ update: stop
 	bundle lock --update
 	$(MAKE) build
 	$(MAKE) test
-	
+
 .PHONY: test serve stop lint

@@ -22,7 +22,8 @@ services:
       DB_HOSTNAME: db
       RACK_ENV: development
       S3_SIGNUP_ALLOWLIST_OBJECT_KEY: 'somefile'
-      S3_SIGNUP_ALLOWLIST_BUCKET: 'somebucket'
+      S3_SIGNUP_ALLOWLIST_BUCKET: 'some_bucket_to_store_signup_allowlist'
+      S3_NOTIFICATION_TEMPLATES_BUCKET: 'some_bucket_to_store_notification_templates'
       NOTIFY_API_KEY: dummy_key-00000000-0000-0000-0000-000000000000-00000000-0000-0000-0000-000000000000
       GOVNOTIFY_BEARER_TOKEN: 'dummy-bearer-token-1234'
       NOTIFY_DO_NOT_REPLY: 'do_not_reply_email_template_id'

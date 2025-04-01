@@ -16,8 +16,6 @@ module Common
       def upload(file_path, s3_key)
         ensure_bucket_exists
         upload_file(file_path, s3_key)
-      rescue Aws::S3::Errors::ServiceError => e
-        logger.error "Error uploading file: #{e.message}"
       end
 
     private
@@ -37,6 +35,7 @@ module Common
           bucket: bucket,
           create_bucket_configuration: { location_constraint: region },
         )
+        logger.info "Bucket '#{bucket}' created"
       rescue Aws::S3::Errors::BucketAlreadyOwnedByYou => e
         logger.warn "Bucket '#{bucket}' already exists: #{e.message}"
       end

@@ -49,6 +49,22 @@ module S3Fake
                        { body: fake_s3.dig(bucket, key) }
                      }
       )
+      client.stub_responses(
+        :create_bucket, lambda { |context|
+                          bucket = context.params[:bucket]
+                          return "BucketAlreadyExists" if fake_s3.key?(bucket)
+
+                          fake_s3[bucket] = {}
+                          {}
+                        }
+      )
+      client.stub_responses(
+        :head_bucket, lambda { |context|
+                        return "NotFound" unless fake_s3.key?(context.params[:bucket])
+
+                        {}
+                      }
+      )
     end
   end
 end

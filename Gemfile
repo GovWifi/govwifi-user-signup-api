@@ -3,6 +3,7 @@ ruby File.read(".ruby-version").chomp
 
 gem "aws-sdk-s3", "~> 1"
 gem "mail", "~> 2.8"
+gem "mutex_m"
 gem "mysql2"
 gem "net-smtp"
 gem "nokogiri", "~> 1.18"

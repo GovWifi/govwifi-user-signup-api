@@ -2,7 +2,7 @@ source "http://rubygems.org"
 ruby File.read(".ruby-version").chomp
 
 gem "aws-sdk-s3", "~> 1"
-gem "mail", "~> 2.8"
+gem "mail", "~> 2.9"
 gem "mutex_m"
 gem "mysql2"
 gem "net-smtp"

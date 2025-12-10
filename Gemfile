@@ -2,18 +2,18 @@ source "http://rubygems.org"
 ruby File.read(".ruby-version").chomp
 
 gem "aws-sdk-s3", "~> 1"
-gem "mail", "~> 2.8"
+gem "mail", "~> 2.9"
 gem "mutex_m"
 gem "mysql2"
 gem "net-smtp"
 gem "nokogiri", "~> 1.18"
-gem "notifications-ruby-client", "~> 6.2.0"
+gem "notifications-ruby-client", "~> 6.3.0"
 gem "puma"
 gem "rake", "~> 13.3"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.8"
 gem "sentry-ruby"
-gem "sequel", "~> 5.94"
+gem "sequel", "~> 5.99"
 gem "sinatra"
 
 group :test do

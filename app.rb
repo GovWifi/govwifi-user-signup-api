@@ -31,7 +31,18 @@ class App < Sinatra::Base
   end
 
   get "/healthcheck" do
-    Notifications::NotifyTemplates.verify_templates
+    # When running locally we may use dummy or missing Notify credentials.
+    # To avoid external auth calls failing the healthcheck for local testing,
+    # set `TEST_LOCAL=1` in your environment (or in `docker-compose.local.yml`).
+    # The check still runs in CI/test/staging/production unless explicitly
+    # disabled by this variable.
+    local_test = ENV["TEST_LOCAL"] == "1" || ENV["TEST_LOCAL"] == "true"
+
+    # Use an explicit positive comparison for readability in conditionals
+    if local_test == false
+      Notifications::NotifyTemplates.verify_templates
+    end
+
     "Healthy"
   rescue StandardError => e
     logger.error(e.message)

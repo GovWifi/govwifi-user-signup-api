@@ -19,6 +19,14 @@ serve:
 	$(MAKE) build
 	$(DOCKER_COMPOSE) up -d
 
+servelocal:
+	$(MAKE) build
+	docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+stoplocal:
+	docker compose -f docker-compose.yml -f docker-compose.local.yml kill
+	docker compose -f docker-compose.yml -f docker-compose.local.yml rm -f
+
 lint:
 	$(MAKE) build
 	$(DOCKER_COMPOSE) run --no-deps --rm app bundle exec rubocop
@@ -40,4 +48,4 @@ update: stop
 	$(MAKE) build
 	$(MAKE) test
 
-.PHONY: test serve stop lint
+.PHONY: test serve stop lint servelocal stoplocal

@@ -66,7 +66,13 @@ make lint
 make serve
 ```
 
-Then access the site at <http://localhost:8080/healthcheck>
+For local development you can publish the app port to your host with:
+
+```shell
+make servelocal
+```
+
+`make servelocal` also sets `TEST_LOCAL=1` inside the container which disables Notify template verification for local testing (so `GET /healthcheck` won't fail because of a dummy NOTIFY_API_KEY). Then access the site at <http://localhost:8080/healthcheck>
 
 ### Deploying changes
 

@@ -10,7 +10,13 @@ class WifiUser::UseCase::EmailJourneyHandler
       user = WifiUser::User.find_or_create(contact: @from_address)
       WifiUser::EmailSender.send_signup_instructions(user)
     else
-      WifiUser::EmailSender.send_rejected_email_address(@from_address)
+      user = WifiUser::User.find(contact: @from_address)
+
+      if user
+        WifiUser::EmailSender.send_signup_instructions(user)
+      else
+        WifiUser::EmailSender.send_rejected_email_address(@from_address)
+      end
     end
   end
-end
+  

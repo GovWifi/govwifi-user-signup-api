@@ -4,6 +4,9 @@ class Services
   end
 
   def self.notify_client
-    Notifications::Client.new(ENV.fetch("NOTIFY_API_KEY"))
+    Notifications::Client.new(
+      ENV.fetch("NOTIFY_API_KEY"),
+      ENV.fetch("NOTIFY_API_BASE_URL", nil),
+    )
   end
 end

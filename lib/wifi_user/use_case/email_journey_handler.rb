@@ -19,4 +19,4 @@ class WifiUser::UseCase::EmailJourneyHandler
       end
     end
   end
-  
+end

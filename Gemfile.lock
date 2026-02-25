@@ -30,7 +30,7 @@ GEM
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
-    bigdecimal (4.0.0)
+    bigdecimal (4.0.1)
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
     crack (1.0.1)
@@ -195,7 +195,7 @@ GEM
     sentry-ruby (6.1.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    sequel (5.99.0)
+    sequel (5.101.0)
       bigdecimal
     shellany (0.0.1)
     simplecov (0.22.0)
@@ -247,7 +247,7 @@ DEPENDENCIES
   rubocop-govuk
   sensible_logging (~> 0.4.8)
   sentry-ruby
-  sequel (~> 5.99)
+  sequel (~> 5.101)
   simplecov
   sinatra
   timecop

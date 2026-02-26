@@ -7,7 +7,7 @@ class WifiUser::UseCase::SmsResponse
     phone_number = WifiUser::PhoneNumber.extract_from(contact)
     return @logger.warn("Unexpected contact detail found #{contact}") if phone_number.nil?
 
-    DB.transaction do
+    DB.transaction(retry_on: Sequel::SerializationFailure) do
       login_details = WifiUser::User.find_or_create(contact: phone_number)
       personalisation = { login: login_details[:username], pass: login_details[:password] }
 

@@ -6,6 +6,7 @@ RSpec.describe App do
     [
       instance_double(Notifications::Client::Template, name: "self_signup_credentials_email", id: "self_signup_credentials_id"),
       instance_double(Notifications::Client::Template, name: "rejected_email_address_email", id: "rejected_email_address_id"),
+      instance_double(Notifications::Client::Template, name: "sponsor_credentials_expired_notification_email", id: "sponsor_credentials_expired_notification_id"),
     ]
   end
   include_context "simple allow list"
@@ -28,6 +29,7 @@ RSpec.describe App do
       post "/user-signup/email-notification", request_body.to_json, email_request_headers
     end
 
+    # Government email (find_or_create, always send signup instructions)
     describe "A valid user signs up" do
       let(:from) { "john@gov.uk" }
       it "creates a new user" do
@@ -95,21 +97,79 @@ RSpec.describe App do
       end
     end
 
-    describe "The user is from a non-government email address" do
+    # Non-government email (find only and not create) 90-day window for sponsored users; rejected as fallback.
+    describe "when the sender has a non-government email and no user exists" do
       let(:from) { "john@non-government.uk" }
-      it "Does not create a user" do
-        expect {
-          do_user_signup
-        }.to_not change(WifiUser::User, :count)
+
+      it "does not create a user" do
+        expect { do_user_signup }.not_to change(WifiUser::User, :count)
       end
-      it "Sends a rejection email" do
+
+      it "sends rejected email (fallback when they do not meet any requirements)" do
         do_user_signup
-        expect(Services.notify_client).to have_received(:send_email).with(email_address: "john@non-government.uk",
-                                                                          template_id: "rejected_email_address_id",
-                                                                          email_reply_to_id: "do_not_reply_email_template_id")
+        expect(Services.notify_client).to have_received(:send_email).with(
+          email_address: "john@non-government.uk",
+          template_id: "rejected_email_address_id",
+          email_reply_to_id: "do_not_reply_email_template_id",
+        )
       end
     end
 
+    describe "when the sender is a non-government email and a sponsored user exists within 90 days" do
+      let(:from) { "john@non-government.uk" }
+      before do
+        @user = FactoryBot.create(
+          :user_details,
+          contact: from,
+          sponsor: "sponsor@gov.uk",
+          last_login: Date.today - 30,
+        )
+      end
+
+      it "does not create a new user" do
+        expect { do_user_signup }.not_to change(WifiUser::User, :count)
+      end
+
+      it "sends signup instructions (same as gov journey)" do
+        do_user_signup
+        expect(Services.notify_client).to have_received(:send_email).with(
+          email_address: from,
+          personalisation: { username: @user.username, password: @user.password },
+          template_id: "self_signup_credentials_id",
+          email_reply_to_id: "do_not_reply_email_template_id",
+        )
+      end
+    end
+
+    describe "when the sender is a non-government email and a sponsored user exists beyond 90 days" do
+      let(:from) { "john@non-government.uk" }
+      before do
+        FactoryBot.create(
+          :user_details,
+          contact: from,
+          sponsor: "sponsor@gov.uk",
+          last_login: Date.today - 120,
+        )
+      end
+
+      it "does not send credentials email" do
+        do_user_signup
+        expect(Services.notify_client).not_to have_received(:send_email).with(
+          hash_including(template_id: "self_signup_credentials_id"),
+        )
+      end
+
+      it "sends sponsor credentials expired notification instead" do
+        do_user_signup
+        expect(Services.notify_client).to have_received(:send_email).with(
+          email_address: from,
+          template_id: "sponsor_credentials_expired_notification_id",
+          email_reply_to_id: "do_not_reply_email_template_id",
+        )
+      end
+    end
+
+    # Invalid requests: no user created, no email sent, 200
     describe "invalid email address" do
       let(:request_body) { FactoryBot.create(:request_body, from: "invalid@email@address") }
       include_examples "rejects_email"

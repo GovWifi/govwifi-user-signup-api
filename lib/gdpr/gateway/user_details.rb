@@ -4,6 +4,7 @@ class Gdpr::Gateway::Userdetails
   SESSION_BATCH_SIZE = 50
   TIME_TO_DELETE = "1 YEAR".freeze
   TIME_TO_NOTIFY = "11 MONTH".freeze
+  SPONSORED_INACTIVE_DAYS = 90
   HEALTH_USER = "HEALTH".freeze
 
   def initialize
@@ -23,6 +24,25 @@ class Gdpr::Gateway::Userdetails
       total += inactive_users.delete
     end
     @logger.info("Finished daily old user deletion, #{total} rows affected")
+  end
+
+  def delete_inactive_sponsored_users
+    @logger.info("Starting deletion of sponsored users inactive for #{SPONSORED_INACTIVE_DAYS} days")
+    now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+    interval = "#{SPONSORED_INACTIVE_DAYS} DAY"
+
+    sql = Sequel.lit(
+      "contact != sponsor AND sponsor IS NOT NULL AND " \
+      "((last_login < DATE_SUB(?, INTERVAL #{interval})) OR " \
+      "(last_login IS NULL AND created_at < DATE_SUB(?, INTERVAL #{interval})))",
+      now, now
+    )
+
+    total = 0
+    while (inactive = WifiUser::User.where(sql).limit(SESSION_BATCH_SIZE)).count.positive?
+      total += inactive.delete
+    end
+    @logger.info("Finished sponsored user deletion, #{total} rows affected")
   end
 
   def obfuscate_sponsors

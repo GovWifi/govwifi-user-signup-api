@@ -7,6 +7,14 @@ class WifiUser::EmailSender
     )
   end
 
+  def self.send_sponsor_credentials_expired_notification(email_address)
+    Services.notify_client.send_email(
+      email_address:,
+      template_id: Notifications::NotifyTemplates.template(:sponsor_credentials_expired_notification_email),
+      email_reply_to_id: do_not_reply_email_address_id,
+    )
+  end
+
   def self.send_signup_instructions(user)
     Services.notify_client.send_email(
       email_address: user.contact,

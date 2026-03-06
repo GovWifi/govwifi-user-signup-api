@@ -2,6 +2,7 @@ module Notifications
   class NotifyTemplates
     TEMPLATES = %w[self_signup_credentials_email
                    rejected_email_address_email
+                   sponsor_credentials_expired_notification_email
                    sponsor_credentials_email
                    sponsor_confirmation_plural_email
                    sponsor_confirmation_singular_email

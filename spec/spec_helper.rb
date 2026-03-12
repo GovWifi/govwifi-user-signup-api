@@ -81,8 +81,9 @@ end
 RSpec.shared_context "fake notify" do
   let(:templates) do
     [
-      instance_double(Notifications::Client::Template, name: "self_signup_credentials", id: "self_signup_credentials_id"),
-      instance_double(Notifications::Client::Template, name: "rejected_email_address", id: "rejected_email_address_id"),
+      instance_double(Notifications::Client::Template, name: "self_signup_credentials_email", id: "self_signup_credentials_id"),
+      instance_double(Notifications::Client::Template, name: "rejected_email_address_email", id: "rejected_email_address_id"),
+      instance_double(Notifications::Client::Template, name: "sponsor_credentials_expired_notification_email", id: "sponsor_credentials_expired_notification_id"),
     ]
   end
   before :each do

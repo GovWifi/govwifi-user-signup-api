@@ -33,7 +33,7 @@ This application used to send statistics to the [Performance Platform][performan
 
 ### Policies
 
-- **Username/password reminder through sponsorships:** Not allowed after 90 days from initial registration/usage. Reminders are only available within the first 90 days.
+- **Sponsored users username/password reminder:** Not allowed after 90 days from initial registration/usage. Reminders are only available within the first 90 days.
 - **Sponsored users/accounts:** Deleted after 90 days of inactivity (see Inactive User Deletion below).
 
 ### Inactive User Deletion

@@ -31,9 +31,16 @@ This application used to send statistics to the [Performance Platform][performan
 
 ## GDPR
 
+### Policies
+
+- **Username/password reminder through sponsorships:** Not allowed after 90 days from initial registration/usage. Reminders are only available within the first 90 days.
+- **Sponsored users/accounts:** Deleted after 90 days of inactivity (see Inactive User Deletion below).
+
 ### Inactive User Deletion
 
 Any user who has not logged into GovWifi for more than 12 months is considered inactive.
+
+Sponsored users/accounts are deleted after 90 days of inactivity.
 
 We have a Rake task that runs daily with ECS Scheduled tasks to ensure this happens.
 

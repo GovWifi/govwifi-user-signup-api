@@ -118,42 +118,6 @@ describe Gdpr::Gateway::Userdetails do
     end
   end
 
-  context "Deleting inactive sponsored users (90 days)" do
-    context "when sponsored users are inactive for more than 90 days" do
-      before do
-        FactoryBot.create(:user_details, contact: "guest@nongov.uk", sponsor: "sponsor@gov.uk", last_login: Date.today - 100)
-        FactoryBot.create(:user_details, contact: "+447700000001", sponsor: "sponsor@gov.uk", last_login: nil, created_at: Date.today - 100)
-      end
-
-      it "deletes them" do
-        expect { subject.delete_inactive_sponsored_users }.to change { user_details.count }.by(-2)
-        expect(user_details.where(contact: "guest@nongov.uk").count).to eq(0)
-        expect(user_details.where(contact: "+447700000001").count).to eq(0)
-      end
-    end
-
-    context "when sponsored users are inactive for less than 90 days" do
-      before do
-        FactoryBot.create(:user_details, contact: "guest@nongov.uk", sponsor: "sponsor@gov.uk", last_login: Date.today - 30)
-        FactoryBot.create(:user_details, contact: "other@nongov.uk", sponsor: "sponsor@gov.uk", last_login: nil, created_at: Date.today - 30)
-      end
-
-      it "does not delete them" do
-        expect { subject.delete_inactive_sponsored_users }.not_to(change { user_details.count })
-      end
-    end
-
-    context "when self-signup users are inactive for more than 90 days" do
-      before do
-        FactoryBot.create(:user_details, contact: "self@gov.uk", sponsor: "self@gov.uk", last_login: Date.today - 100)
-      end
-
-      it "does not delete them (they are removed by 1-year job)" do
-        expect { subject.delete_inactive_sponsored_users }.not_to(change { user_details.count })
-      end
-    end
-  end
-
   context "Obfuscating user details" do
     context "Inactive sponsor" do
       before do

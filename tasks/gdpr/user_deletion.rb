@@ -6,7 +6,6 @@ task :delete_inactive_users do
   user_details_gateway = Gdpr::Gateway::Userdetails.new
 
   user_details_gateway.delete_inactive_users
-  user_details_gateway.delete_inactive_sponsored_users
   user_details_gateway.notify_inactive_users
   user_details_gateway.obfuscate_sponsors
 

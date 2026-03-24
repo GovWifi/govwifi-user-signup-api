@@ -79,6 +79,35 @@ Then access the site at <http://localhost:8080/healthcheck>
 
 You can find in depth instructions on using our deploy process [here](https://docs.google.com/document/d/1ORrF2HwrqUu3tPswSlB0Duvbi3YHzvESwOqEY9-w6IQ/) (you must be member of the GovWifi Team to access this document).
 
+### Testing in staging
+
+Use staging addresses and integrations when validating changes after deployment.
+
+- Staging sponsor email: `sponsor@staging.wifi.service.gov.uk`
+- Production sponsor email: `sponsor@wifi.service.gov.uk`
+
+If the ECS service does not reach steady state after a deploy, check service events and logs for `/healthcheck`. Healthcheck verifies Notify templates and will fail if required templates are missing.
+
+### Staging user journey walkthrough
+
+#### Sponsor journey
+
+1. Send an email from a valid government sponsor account to `sponsor@staging.wifi.service.gov.uk`.
+2. Put sponsored email addresses and/or phone numbers in the body, one per line.
+3. Confirm each sponsored user receives credentials (email for email contacts, SMS for mobile contacts).
+4. Confirm sponsor confirmation email is received.
+5. Validate records in staging DB (`userdetails`) using `contact` and `sponsor` values.
+
+#### Email signup and rejection journey
+
+1. Send a blank email to `signup@wifi.service.gov.uk` in the environment under test.
+2. Government domain sender:
+   - receives credentials using `self_signup_credentials_email`.
+3. Non government sender:
+   - if no existing user exists, receives `rejected_email_address_email`;
+   - if an existing sponsored user exists and is active in the reminder window, receives credentials;
+   - if an existing sponsored user exists but is outside the reminder window, receives `sponsor_credentials_expired_notification_email`.
+
 ## Licence
 
 This codebase is released under [the MIT License][mit].

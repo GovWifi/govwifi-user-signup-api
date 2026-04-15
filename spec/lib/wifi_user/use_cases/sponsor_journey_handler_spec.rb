@@ -115,6 +115,22 @@ describe WifiUser::UseCase::SponsorJourneyHandler do
         email_reply_to_id: "do_not_reply_email_template_id",
       )
     end
+    context "the sponsor email includes duplicate contacts" do
+      before :each do
+        write_email_to_s3(body: "dave@nongov.uk\n07701001111\ndave@nongov.uk\n07701001111", bucket_name:, object_key:)
+      end
+
+      it "sends credentials once per unique contact" do
+        WifiUser::UseCase::SponsorJourneyHandler.new(sns_message:).execute
+
+        expect(notify_client).to have_received(:send_email).with(
+          hash_including(email_address: "dave@nongov.uk", template_id: "sponsor_credentials_email_id"),
+        ).once
+        expect(Services.notify_client).to have_received(:send_sms).with(
+          hash_including(phone_number: "+447701001111", template_id: "credentials_sms_id"),
+        ).once
+      end
+    end
     context "a user already exists but has not been sponsored" do
       before :each do
         @user = WifiUser::User.create(contact: "test@gov.uk")

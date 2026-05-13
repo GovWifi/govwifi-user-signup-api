@@ -134,6 +134,21 @@ RSpec.describe App do
         notify_has_sent_email_to "john@nongov.uk"
         notify_has_sent_email_to "emma@elsewhere.uk"
       end
+
+      it "deduplicates duplicate email contacts before sending credentials" do
+        write_email_to_s3(body: "john@nongov.uk\njohn@nongov.uk\nemma@elsewhere.uk", bucket_name:, object_key:)
+
+        expect {
+          do_user_signup
+        }.to change(WifiUser::User, :count).by(2)
+
+        expect(Services.notify_client).to have_received(:send_email).with(
+          hash_including(email_address: "john@nongov.uk", template_id: "sponsor_credentials_email_id"),
+        ).once
+        expect(Services.notify_client).to have_received(:send_email).with(
+          hash_including(email_address: "emma@elsewhere.uk", template_id: "sponsor_credentials_email_id"),
+        ).once
+      end
     end
 
     describe "A valid sponsor signs up users through SMS" do

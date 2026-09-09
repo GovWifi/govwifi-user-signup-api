@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 ruby File.read(".ruby-version").chomp
 
 gem "aws-sdk-s3", "~> 1"
@@ -9,11 +9,11 @@ gem "net-smtp"
 gem "nokogiri", "~> 1.19"
 gem "notifications-ruby-client", "~> 6.4.0"
 gem "puma"
-gem "rake", "~> 13.3"
+gem "rake", "~> 13.4"
 gem "require_all"
 gem "sensible_logging", "~> 0.4.8"
 gem "sentry-ruby"
-gem "sequel", "~> 5.102"
+gem "sequel", "~> 5.104"
 gem "sinatra"
 
 group :test do
